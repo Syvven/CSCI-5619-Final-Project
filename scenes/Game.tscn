@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://f477brv3bxe1"]
+
+[ext_resource type="Script" path="res://scripts/AIController.gd" id="1_ts2st"]
+[ext_resource type="Script" path="res://scripts/GameController.gd" id="1_yncbg"]
+
+[node name="GameController" type="Node3D"]
+script = ExtResource("1_yncbg")
+
+[node name="AIControllerOne" type="Node3D" parent="."]
+script = ExtResource("1_ts2st")

@@ -1,3 +1,13 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1702582223
+::res://::1702664684
 icon.svg::CompressedTexture2D::8200850125681427703::1702582204::1702582231::1::::<><>::
+README.md::TextFile::-1::1702582097::0::1::::<><>::
+::res://scenes/::1702607761
+Board.tscn::PackedScene::5891735112663780583::1702607761::0::1::::<><>::res://shaders/Board.gdshader<>res://scripts/Board.gd
+main.tscn::PackedScene::1163004328877137758::1702607760::0::1::::<><>::res://scripts/TestCameraController.gd<>res://scripts/GameController.gd
+::res://scripts/::1702603652
+Board.gd::GDScript::-1::1702609289::0::1::::<>RigidBody3D<>::
+GameController.gd::GDScript::-1::1702610712::0::1::::<>Node3D<>::
+TestCameraController.gd::GDScript::-1::1702603451::0::1::::<>Camera3D<>::
+::res://shaders/::1702607761
+Board.gdshader::Shader::-1::1702607761::0::1::::<><>::

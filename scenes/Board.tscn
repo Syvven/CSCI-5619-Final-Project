@@ -1,0 +1,112 @@
+[gd_scene load_steps=12 format=3 uid="uid://cp7aatc88lpqd"]
+
+[ext_resource type="Shader" path="res://shaders/Board.gdshader" id="1_77xdx"]
+[ext_resource type="Script" path="res://scripts/Board.gd" id="1_u7jl6"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_tnpd2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyr6h"]
+albedo_texture = SubResource("CanvasTexture_tnpd2")
+
+[sub_resource type="BoxMesh" id="BoxMesh_reya0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_to47w"]
+render_priority = 0
+shader = ExtResource("1_77xdx")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jtbsc"]
+material = SubResource("ShaderMaterial_to47w")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uonh2"]
+albedo_color = Color(1, 0.0352941, 0.0352941, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xyeg0"]
+material = SubResource("StandardMaterial3D_uonh2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_awyfo"]
+albedo_color = Color(0, 0.0352941, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_mv2f3"]
+material = SubResource("StandardMaterial3D_awyfo")
+
+[node name="Board" type="RigidBody3D"]
+script = ExtResource("1_u7jl6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.099, 0, 0, 0, 1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_eyr6h")
+mesh = SubResource("BoxMesh_reya0")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.099, 0, 0, 0, 0.5, 0, 0.05, 0)
+mesh = SubResource("PlaneMesh_jtbsc")
+skeleton = NodePath("../MeshInstance3D")
+
+[node name="RedPieces" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.063, 0.06, 0.438)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.313, 0.06, 0.438)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.188, 0.06, 0.438)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.437, 0.06, 0.438)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.187764, 0.06, 0.3116)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.437764, 0.06, 0.3116)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.0632357, 0.06, 0.3116)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="RedPieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.312236, 0.06, 0.3116)
+mesh = SubResource("CylinderMesh_xyeg0")
+
+[node name="BluePieces" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.0613795, 0.06, -0.438333)
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.188674, 0.06, -0.438333)
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.311536, 0.06, -0.438333)
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.437951, 0.06, -0.440917)
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.438268, 0.06, -0.311859)
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.187905, 0.06, -0.311704)
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.0616828, 0.06, -0.312221)
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="BluePieces"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.313958, 0.06, -0.312014)
+mesh = SubResource("CylinderMesh_mv2f3")
