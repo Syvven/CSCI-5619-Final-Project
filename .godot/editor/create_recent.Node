@@ -1,6 +1,13 @@
-Node3D
 MeshInstance3D
-Camera3D
-MultiMeshInstance3D
+Button
 CanvasLayer
+SubViewport
+Node3D
+Area3D
+CollisionShape3D
+StaticBody3D
+Node
+MultiMeshInstance3D
 RigidBody3D
+PathFollow3D
+Path3D

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cp7aatc88lpqd"]
+[gd_scene load_steps=15 format=3 uid="uid://cp7aatc88lpqd"]
 
 [ext_resource type="Shader" path="res://shaders/Board.gdshader" id="1_77xdx"]
 [ext_resource type="Script" path="res://scripts/Board.gd" id="1_u7jl6"]
@@ -16,6 +16,7 @@ shader = ExtResource("1_77xdx")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_jtbsc"]
 material = SubResource("ShaderMaterial_to47w")
+size = Vector2(1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uonh2"]
 albedo_color = Color(1, 0.0352941, 0.0352941, 1)
@@ -29,11 +30,25 @@ albedo_color = Color(0, 0.0352941, 1, 1)
 [sub_resource type="CylinderMesh" id="CylinderMesh_mv2f3"]
 material = SubResource("StandardMaterial3D_awyfo")
 
-[node name="Board" type="RigidBody3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_mder0"]
+size = Vector3(0.5, 0.125, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w7afs"]
+transparency = 1
+albedo_color = Color(1, 1, 0.0588235, 0.176471)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0onlq"]
+material = SubResource("StandardMaterial3D_w7afs")
+size = Vector3(0.6, 0.17, 0.6)
+
+[node name="Board" type="RigidBody3D" groups=["grabbable"]]
+collision_layer = 4
+collision_mask = 5
+gravity_scale = 0.0
 script = ExtResource("1_u7jl6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.099, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.099, 0, 0, 0, 0.5, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_eyr6h")
 mesh = SubResource("BoxMesh_reya0")
 skeleton = NodePath("")
@@ -44,6 +59,7 @@ mesh = SubResource("PlaneMesh_jtbsc")
 skeleton = NodePath("../MeshInstance3D")
 
 [node name="RedPieces" type="Node3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RedPieces"]
 transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.063, 0.06, 0.438)
@@ -78,6 +94,7 @@ transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.312236, 0.06, 0.311
 mesh = SubResource("CylinderMesh_xyeg0")
 
 [node name="BluePieces" type="Node3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="BluePieces"]
 transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.0613795, 0.06, -0.438333)
@@ -110,3 +127,11 @@ mesh = SubResource("CylinderMesh_mv2f3")
 [node name="MeshInstance3D8" type="MeshInstance3D" parent="BluePieces"]
 transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.313958, 0.06, -0.312014)
 mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0123833, 0)
+shape = SubResource("BoxShape3D_mder0")
+
+[node name="HighlightMesh" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_0onlq")
