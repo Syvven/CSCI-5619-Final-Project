@@ -1,4 +1,4 @@
-# Assignment 4: Virtual Locomotion
+<!-- # Assignment 4: Virtual Locomotion
 
 **Due: Friday, December 1, 11:59pm CDT**
 
@@ -78,4 +78,4 @@ You can make the obstacles any size and shape you want, as long as they create a
 
 ## License
 
-Material for [CSCI 5619 Fall 2023](https://canvas.umn.edu/courses/391288/assignments/syllabus) by [Evan Suma Rosenberg](https://illusioneering.umn.edu/) is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+Material for [CSCI 5619 Fall 2023](https://canvas.umn.edu/courses/391288/assignments/syllabus) by [Evan Suma Rosenberg](https://illusioneering.umn.edu/) is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/). -->
