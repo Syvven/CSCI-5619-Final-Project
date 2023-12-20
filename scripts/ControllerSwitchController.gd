@@ -20,6 +20,8 @@ var on_cooldown = false;
 var angle_threshold = 0.5;
 var speed_threshold = 1.0;
 
+var cooldown_time_delta = 1.0;
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	left_controller = $%LeftController
@@ -42,7 +44,7 @@ func _ready():
 
 	# timer so that we don't change constantly when overlapped
 	cooldown_timer = Timer.new()
-	cooldown_timer.wait_time = 1.5;
+	cooldown_timer.wait_time = cooldown_time_delta;
 	self.add_child(cooldown_timer);
 	cooldown_timer.connect("timeout", self.on_timer_timeout);
 
