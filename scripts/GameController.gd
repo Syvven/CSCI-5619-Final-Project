@@ -157,7 +157,7 @@ func _process(_delta):
 		ai_ctrl_1.update_depth(depth);
 		depth_display.text = "< Display " + str(depth) + " >"; 
 	else:
-		ai_ctrl_1.stats_depth += sign(stick_value.x);
+		ai_ctrl_1.stats_depth = max(ai_ctrl_1.stats_depth + sign(stick_value.x), 0);
 		stats_depth = ai_ctrl_1.stats_depth;
 		depth_display.text = "< Stats " + str(ai_ctrl_1.stats_depth) + " >"; 
 	updated_depth = true;
