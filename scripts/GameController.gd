@@ -19,9 +19,13 @@ var chosen_board: PackedByteArray;
 var depth := 1
 
 var trigger_pressed := false;
-var change_depth_dead_zone := 0.9;
+var dead_zone := 0.9;
 var updated_depth := false;
 var stick_value := Vector2();
+
+var viz_depth_mode := true;
+var updated_mode := false;
+var stats_depth := 0;
 
 var collision_area: Area3D = null;
 var board_mesh: MeshInstance3D = null;
@@ -41,6 +45,7 @@ func _ready():
 	ai_ctrl_1 = $AIControllerOne
 	depth_display = $DepthDisplayViewport/CanvasLayer/Button
 	ai_ctrl_1.search_depth = depth
+	stats_depth = ai_ctrl_1.stats_depth;
 
 	collision_area = $BoardOutline/Area3D;
 	board_mesh = $BoardOutline/GreenBoard;
@@ -129,16 +134,36 @@ func _process(_delta):
 
 	if not trigger_pressed: return;
 
-	if abs(stick_value.x) <= change_depth_dead_zone or updated_depth:
+	if abs(stick_value.y) <= dead_zone or updated_mode:
+		if abs(stick_value.y) <= 1e-6:
+			updated_mode = false;
+	else:
+		updated_mode = true;
+		viz_depth_mode = not viz_depth_mode;
+		if viz_depth_mode: 
+			depth_display.text = "< Display " + str(depth) + " >"; 	
+		else:
+			depth_display.text = "< Stats " + str(ai_ctrl_1.stats_depth) + " >"; 
+
+	
+
+	if abs(stick_value.x) <= dead_zone or updated_depth:
 		if abs(stick_value.x) < 1e-6: 
 			updated_depth = false;
 		return;
 
-	depth = min(max(1, depth + sign(stick_value.x)), 2);
-	ai_ctrl_1.update_depth(depth);
+
+	if viz_depth_mode:
+		depth = min(max(1, depth + sign(stick_value.x)), 2);
+		ai_ctrl_1.update_depth(depth);
+		depth_display.text = "< Display " + str(depth) + " >"; 
+	else:
+		ai_ctrl_1.stats_depth += sign(stick_value.x);
+		stats_depth = ai_ctrl_1.stats_depth;
+		depth_display.text = "< Stats " + str(ai_ctrl_1.stats_depth) + " >"; 
 	updated_depth = true;
 
-	depth_display.text = "< Display " + str(depth) + " >"; 
+	
 
 
 func update_root_board(board: PackedByteArray):

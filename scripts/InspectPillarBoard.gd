@@ -7,7 +7,8 @@ var stats_button: Button = null;
 var board_mesh: MeshInstance3D = null;
 var stats_updated := false
 
-var base_text = "------ Board Stats (Depth 5) ------\n"
+var base_text1 = "------ Board Stats (Depth "
+var base_text2 = ") ------\n"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -54,7 +55,10 @@ func _process(_delta):
 	if not occupied:
 		self.visible = true;
 		self.held_board = null;
-		stats_button.text = base_text + "No Board Present"
+		stats_button.text = (
+			base_text1 + str(controller.stats_depth) + 
+			base_text2 + "No Board Present"
+		)
 		return;
 
 	self.visible = false;
@@ -67,14 +71,18 @@ func _process(_delta):
 		if stat_ret[0]:
 			var stats = stat_ret[1]
 			stats_updated = true;
-			stats_button.text = base_text + (
+			stats_button.text = (
+				base_text1 + str(controller.stats_depth) + base_text2 +
 				"Wins: " + str(stats["wins"]) + "\n" +
 				"Losses: " + str(stats["losses"]) + "\n" +
 				"Draws: " + str(stats["draws"]) + "\n" + 
 				"Total States: " + str(stats["total_states"])
 			);
 		else:
-			stats_button.text = base_text + "Loading..."
+			stats_button.text = (
+				base_text1 + str(controller.stats_depth) + 
+				base_text2 + "Loading..."
+			)
 
 
 func board_entered():

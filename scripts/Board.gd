@@ -31,6 +31,7 @@ var king_blue_pieces: Array;
 
 var parent_scene: RigidBody3D = null;
 var next_scenes: Array = []
+var cylinders: Array = []
 
 var piece_height = 2 * 0.01;
 
@@ -113,4 +114,4 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	pass
+	self.linear_velocity = Vector3();

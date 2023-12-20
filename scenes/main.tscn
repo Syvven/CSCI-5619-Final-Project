@@ -264,23 +264,24 @@ transform = Transform3D(-2.51773e-09, -0.99834, -0.0575989, -4.36388e-08, 0.0575
 material_override = SubResource("StandardMaterial3D_w5mfd")
 mesh = SubResource("PlaneMesh_yoxo3")
 
-[node name="BoardOutline" type="Node3D" parent="."]
+[node name="StatsBoardController" type="Node3D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("6_hoqqx")
 
-[node name="Area3D" type="Area3D" parent="BoardOutline"]
+[node name="Area3D" type="Area3D" parent="StatsBoardController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.78367, 0, 2.96149)
 collision_mask = 5
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BoardOutline/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StatsBoardController/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06482, 0)
 shape = SubResource("BoxShape3D_k4pjb")
 
-[node name="GreenBoard" type="MeshInstance3D" parent="BoardOutline"]
+[node name="GreenBoard" type="MeshInstance3D" parent="StatsBoardController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.78367, 1.05, 2.96149)
 mesh = SubResource("BoxMesh_4an6k")
 skeleton = NodePath("")
 
-[node name="TopPlate" type="MeshInstance3D" parent="BoardOutline"]
+[node name="TopPlate" type="MeshInstance3D" parent="StatsBoardController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.78367, 1.101, 2.96149)
 mesh = SubResource("PlaneMesh_14ut4")
 skeleton = NodePath("")

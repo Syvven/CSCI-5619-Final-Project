@@ -1,5 +1,10 @@
+res://scripts/Marker.gd
+res://scripts/AIController.gd
 res://scenes/main.tscn
 res://shaders/Board.gdshader
 res://shaders/BoardInvis.gdshader
 res://scenes/Game.tscn
 res://scenes/Board.tscn
+res://scripts/Board.gd
+res://scripts/GameController.gd
+res://scripts/InspectPillarBoard.gd

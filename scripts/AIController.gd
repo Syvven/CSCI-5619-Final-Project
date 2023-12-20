@@ -43,12 +43,15 @@ var board_scene := preload("res://scenes/Board.tscn")
 var root_board_scene: RigidBody3D = null
 
 var search_depth := 1;
+var stats_depth := 5;
 
 var turn_color: int = P.BLUE;
 
 var thread := Thread.new();
 var stats_ready := false;
 var found_stats: Dictionary = {};
+
+var color_step := 0.0;
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -192,6 +195,7 @@ func recurse_generate_scenes(
 	var all_valid_moves = get_all_valid_moves(board, turn)
 
 	parent.next_scenes = []
+	parent.cylinders = []
 	for move in all_valid_moves:
 		# move[0] -> from idx, move[1] -> to idx, 
 		# move[2] -> piece captured, move[3] -> idx of piece captured
@@ -201,6 +205,21 @@ func recurse_generate_scenes(
 		
 		# for setting up the cloud later
 		parent.next_scenes.append(new_child);
+
+		var new_mesh = MeshInstance3D.new();
+		new_mesh.mesh = CylinderMesh.new();
+		new_mesh.scale = Vector3(0.01, 0.01, 1);
+		var new_material = StandardMaterial3D.new();
+
+		var cstep = 0.8 / search_depth;
+
+		new_material.albedo_color = Color(0.0, level*cstep, 0.0);
+		new_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		new_mesh.mesh.surface_set_material(0, new_material)
+
+		parent.cylinders.append(new_mesh);
+
+		self.add_child(new_mesh)
 		# change turn color before recursing
 		recurse_generate_scenes(
 			new_child, new_board[0], opposite_type[turn], level-1
@@ -260,7 +279,7 @@ func recurse_get_stats(
 	board: PackedByteArray, turn: int, stats: Dictionary, depth: int, 
 	recent_king_counts: Dictionary, num_since_board_change_with_king: int
 ):
-	if depth == 5:
+	if depth == 0:
 		return;
 
 	stats["total_states"] += 1
@@ -306,12 +325,12 @@ func recurse_get_stats(
 	for move in all_valid_moves:
 		var new_board = do_move_on_board(board, move);
 		recurse_get_stats(
-			new_board[0], opposite_type[turn], stats, depth+1, 
+			new_board[0], opposite_type[turn], stats, depth-1, 
 			counts, num_since_board_change_with_king
 		);
 	
 	# for threading stuff, say that you found stats when the first recursion ends
-	if depth == 0:
+	if depth == stats_depth:
 		found_stats = stats;
 		stats_ready = true;
 
@@ -348,15 +367,40 @@ func start_stats(board: PackedByteArray):
 	found_stats = {}
 	# starts thread so there's no lag in calculating
 	thread.start(
-		recurse_get_stats.bind(board, self.turn_color, stats, 0, counts, 0)
+		recurse_get_stats.bind(board, self.turn_color, stats, stats_depth, counts, 0)
 	)
 
 	# recurse_get_stats(board, self.turn_color, stats, 0, counts, 0);
 
 
+func recurse_set_cylinder_poses(parent: RigidBody3D, depth: int):
+	for i in range(parent.next_scenes.size()):
+		var scene = parent.next_scenes[i];
+
+		assert(scene != parent);
+
+		var cyl = parent.cylinders[i];
+		cyl.visible = true;
+
+		var diff_vec = scene.global_position - parent.global_position;
+
+		# put cylinder between the two
+		cyl.global_position = parent.global_position + diff_vec * 0.5;
+
+		var dist = diff_vec.length();
+
+		if dist > 3: cyl.visible = false;
+
+		cyl.scale.z = diff_vec.length();
+
+		# look cylinder at the parent
+		cyl.look_at(parent.global_position)
+
+		recurse_set_cylinder_poses(scene, depth+1);
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta) -> void:
-	pass
+	recurse_set_cylinder_poses(root_board_scene, 0);
 
 
 func _exit_tree():
