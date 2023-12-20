@@ -18,14 +18,12 @@ var input_vector:= Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	leftController = $%LeftController as XRController3D
+	rightController = $%RightController as XRController3D
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	leftController = $%LeftController as XRController3D
-	rightController = $%RightController as XRController3D
-
 	current_controller = (
 		rightController 
 		if use_right_controller else 
@@ -38,6 +36,7 @@ func _process(_delta):
 		rightController
 	)
 
+	# reconnecting of signals if needed
 	if not current_controller.button_pressed.is_connected(self.on_botton_pressed):
 		current_controller.button_pressed.connect(self.on_botton_pressed); 
 

@@ -18,16 +18,18 @@ var zoom_marker_zoom:= false
 var zoom_marker_shrink:= false
 var input_vector:= Vector2.ZERO
 var show:= false
+var change_color_dead_zone = 0.9
+var change_color_flag = false
+var prev_color :=Color(0,1,0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
 	leftController = $%LeftController as XRController3D
 	rightController = $%RightController as XRController3D
 
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
 	current_controller = (
 		rightController 
 		if use_right_controller else 
@@ -39,7 +41,8 @@ func _process(_delta):
 		if use_right_controller else 
 		rightController
 	)
-
+		
+	# do reconnecting of signals if needed
 	if not current_controller.button_pressed.is_connected(self.on_botton_pressed):
 		current_controller.button_pressed.connect(self.on_botton_pressed); 
 
@@ -91,6 +94,20 @@ func _process(_delta):
 		self.grabbed_object.look_at(current_controller.global_position, up)
 		if show:
 			self.grabbed_object.rotate_object_local(Vector3(1, 0, 0),deg_to_rad(-90))
+
+	if self.input_vector.x <= self.change_color_dead_zone && self.input_vector.x >= -self.change_color_dead_zone && !show:
+		change_color_flag = true
+	if change_color_flag:
+		var mesh = self.get_node("MeshInstance3D") as MeshInstance3D
+		var material = mesh.mesh.surface_get_material(0)
+		if self.input_vector.x > self.change_color_dead_zone && !show:
+			prev_color = material.albedo_color
+			var random_color = Color(fmod(randf(), 1.0), fmod(randf(), 1.0), fmod(randf(), 1.0))
+			material.albedo_color = random_color
+			change_color_flag = false
+		if self.input_vector.x < -self.change_color_dead_zone && !show:
+			material.albedo_color = prev_color
+			change_color_flag = false
 					
 func on_botton_pressed(button_name: String) -> void:
 	# Stop if we have not clicked the grip button or we already are grabbing an object
@@ -127,7 +144,6 @@ func on_botton_pressed(button_name: String) -> void:
 					break
 
 			# Freeze the object physics and then grab it
-			grabbable_body.freeze = true
 			self.grabbed_object = grabbable_body
 			globals.active_grabbers.push_back(self)
 			
@@ -146,8 +162,7 @@ func on_botton_released(button_name: String) -> void:
 		return
 
 	# Release the grabbed object and unfreeze it
-	self.grabbed_object.freeze = false
-	self.grabbed_object.linear_velocity = Vector3(0, -0.1, 0)
+	self.grabbed_object.linear_velocity = Vector3(0, 0, 0)
 	self.grabbed_object.angular_velocity = Vector3.ZERO
 	self.grabbed_object = null
 

@@ -85,6 +85,7 @@ func _process(_delta):
 		leftController
 	)
 
+	# do reconnecting of signals if it is needed
 	if not current_controller.button_pressed.is_connected(self.button_down):
 		current_controller.button_pressed.connect(self.button_down); 
 
@@ -138,20 +139,18 @@ func _process(_delta):
 		if abs(stick_value.y) <= 1e-6:
 			updated_mode = false;
 	else:
+		# change the mode of depth switching if needed
 		updated_mode = true;
 		viz_depth_mode = not viz_depth_mode;
 		if viz_depth_mode: 
 			depth_display.text = "< Display " + str(depth) + " >"; 	
 		else:
 			depth_display.text = "< Stats " + str(ai_ctrl_1.stats_depth) + " >"; 
-
 	
-
 	if abs(stick_value.x) <= dead_zone or updated_depth:
 		if abs(stick_value.x) < 1e-6: 
 			updated_depth = false;
 		return;
-
 
 	if viz_depth_mode:
 		depth = min(max(1, depth + sign(stick_value.x)), 2);

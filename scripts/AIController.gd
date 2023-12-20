@@ -78,6 +78,7 @@ func update_depth(new_depth: int):
 	self.turn_color = opposite_type[self.turn_color]
 
 
+# called while recursing to create displayed children boards
 func instantiate_new_board_scene(
 	parent: RigidBody3D, board: PackedByteArray
 ) -> RigidBody3D:
@@ -87,8 +88,6 @@ func instantiate_new_board_scene(
 	new_board_scene.linear_velocity = Vector3();
 
 	self.add_child(new_board_scene)
-
-	new_board_scene.position.x = self.get_children().size() * 1.1;
 
 	return new_board_scene;
 
@@ -226,6 +225,7 @@ func recurse_generate_scenes(
 		);
 
 
+# helper function for determining terminal states
 func count_board_pieces(board: PackedByteArray) -> Dictionary:
 	var counts = {
 		P.BLUE: 0,
@@ -243,6 +243,7 @@ func count_board_pieces(board: PackedByteArray) -> Dictionary:
 	return counts;
 
 
+# sets the vizualized boards in the world
 func recurse_set_board_positions(curr_node: RigidBody3D, depth: int):
 	if depth == 0: return;
 
@@ -259,6 +260,8 @@ func recurse_set_board_positions(curr_node: RigidBody3D, depth: int):
 		recurse_set_board_positions(child, depth-1);
 
 
+# called when a new board is put in the middle
+# creates and distributes all children board around the central board
 func update_next() -> void:
 	print("update next");
 	# clear children to setup the new children
@@ -299,6 +302,7 @@ func recurse_get_stats(
 		stats["draws"] += 1
 		return;
 
+	# kings can mvoe back and forht, this stops that but not in a good way :(
 	if recent_king_counts[P.KINGED] != 0:
 		if (counts[P.KINGED] == recent_king_counts[P.KINGED] and
 			counts[P.BLUE] == recent_king_counts[P.BLUE] and
@@ -345,11 +349,9 @@ func poll_stats() -> Array:
 
 
 func start_stats(board: PackedByteArray):
-	# TODO: calculate stats for given board
-	#   stats should include:
+	# stats should include:
 	#	Total win branches, total loss branches, total draw branches
 	#   total number of child states
-	#	board score
 	# this will be unfettered branch recursion until end of game
 	# end of game conditions include:
 	# 	all of one or other team's pieces gone (win/loss)
@@ -373,6 +375,8 @@ func start_stats(board: PackedByteArray):
 	# recurse_get_stats(board, self.turn_color, stats, 0, counts, 0);
 
 
+# goes through child tree and connects parent to child with a green cylinder
+# color depends on depth of child (light to dark green, highest to lowest depth)
 func recurse_set_cylinder_poses(parent: RigidBody3D, depth: int):
 	for i in range(parent.next_scenes.size()):
 		var scene = parent.next_scenes[i];
@@ -398,10 +402,11 @@ func recurse_set_cylinder_poses(parent: RigidBody3D, depth: int):
 
 		recurse_set_cylinder_poses(scene, depth+1);
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _process(_delta) -> void:
 	recurse_set_cylinder_poses(root_board_scene, 0);
 
 
+# cleanup
 func _exit_tree():
 	thread.wait_to_finish();

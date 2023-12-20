@@ -8,3 +8,8 @@ res://scenes/Board.tscn
 res://scripts/Board.gd
 res://scripts/GameController.gd
 res://scripts/InspectPillarBoard.gd
+res://scripts/Spindle.gd
+res://scripts/ControllerSwitchController.gd
+res://scripts/Grabber.gd
+res://scripts/globals.gd
+res://scripts/locomotion.gd
