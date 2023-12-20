@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://f477brv3bxe1"]
+[gd_scene load_steps=9 format=3 uid="uid://cqkwhysf55y0b"]
 
 [ext_resource type="Script" path="res://scripts/AIController.gd" id="1_ts2st"]
 [ext_resource type="Script" path="res://scripts/GameController.gd" id="1_yncbg"]

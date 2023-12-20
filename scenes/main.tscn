@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scripts/locomotion.gd" id="2_kvn2k"]
 [ext_resource type="PackedScene" uid="uid://dw2kfbg15qqeu" path="res://controllers/controller_l.fbx" id="3_y2kpf"]
 [ext_resource type="PackedScene" uid="uid://doel0ns5nc6bm" path="res://controllers/controller_r.fbx" id="4_5ti0a"]
-[ext_resource type="PackedScene" uid="uid://f477brv3bxe1" path="res://scenes/Game.tscn" id="5_hriei"]
+[ext_resource type="PackedScene" uid="uid://cqkwhysf55y0b" path="res://scenes/Game.tscn" id="5_hriei"]
 [ext_resource type="Script" path="res://scripts/InspectPillarBoard.gd" id="6_hoqqx"]
 [ext_resource type="Shader" path="res://shaders/BoardInvis.gdshader" id="6_txtgk"]
 [ext_resource type="Script" path="res://scripts/Spindle.gd" id="9_lxu1q"]
