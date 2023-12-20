@@ -42,6 +42,7 @@ material = SubResource("StandardMaterial3D_w7afs")
 size = Vector3(0.6, 0.17, 0.6)
 
 [node name="Board" type="RigidBody3D" groups=["grabbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 collision_layer = 4
 collision_mask = 5
 gravity_scale = 0.0
@@ -135,3 +136,89 @@ shape = SubResource("BoxShape3D_mder0")
 [node name="HighlightMesh" type="MeshInstance3D" parent="."]
 visible = false
 mesh = SubResource("BoxMesh_0onlq")
+
+[node name="RedKings" type="Node3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.0613795, 0.06, -0.438333)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.188674, 0.06, -0.438333)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.311536, 0.06, -0.438333)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.437951, 0.06, -0.440917)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.438268, 0.06, -0.311859)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.187905, 0.06, -0.311704)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.0616828, 0.06, -0.312221)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="RedKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.313958, 0.06, -0.312014)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="BlueKings" type="Node3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.0613795, 0.06, -0.438333)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.188674, 0.06, -0.438333)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.311536, 0.06, -0.438333)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.437951, 0.06, -0.440917)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.438268, 0.06, -0.311859)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, -0.187905, 0.06, -0.311704)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.0616828, 0.06, -0.312221)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="BlueKings"]
+transform = Transform3D(0.1, 0, 0, 0, 0.01, 0, 0, 0, 0.1, 0.313958, 0.06, -0.312014)
+visible = false
+mesh = SubResource("CylinderMesh_mv2f3")

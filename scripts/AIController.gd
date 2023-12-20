@@ -14,7 +14,7 @@ var root_board: PackedByteArray = [
 	P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
 	P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
 	P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE,
-	P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY,
+	P.BLUE | P.KINGED, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY,
 ]
 
 var opposite_type := {
@@ -47,8 +47,6 @@ func _ready() -> void:
 
 	self.add_child(root_board_scene);
 
-	update_next();
-
 
 func update_root_board(board: PackedByteArray):
 	root_board_scene.setup_board(board); 
@@ -61,6 +59,8 @@ func update_depth(new_depth: int):
 	if new_depth == search_depth: return;
 	search_depth = new_depth;
 	update_next();
+	# update next switches the turn color, don't want it to in this case
+	self.turn_color = opposite_type[self.turn_color]
 
 
 func instantiate_new_board_scene(board: PackedByteArray):
@@ -171,7 +171,7 @@ func recurse_generate_scenes(board: PackedByteArray, turn: int, level: int):
 	# this function assumes that the root board has been updated
 	if level == 0: return;
 
-	var all_valid_moves = get_all_valid_moves(board, self.turn_color)
+	var all_valid_moves = get_all_valid_moves(board, turn)
 
 	for move in all_valid_moves:
 		# move[0] -> from idx, move[1] -> to idx, 

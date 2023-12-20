@@ -26,8 +26,13 @@ var n_rows = 8;
 
 var red_pieces: Array;
 var blue_pieces: Array;
+var king_red_pieces: Array;
+var king_blue_pieces: Array;
+
+var piece_height = 2 * 0.01;
 
 func update_piece_meshes():
+	# sets piece positions based on the provided board state
 	var idx = 0;
 	var curr_red = 0;
 	var curr_blue = 0;
@@ -39,15 +44,34 @@ func update_piece_meshes():
 			if (curr_cell & P.EMPTY): continue;
 
 			var curr_piece = null;
+			var king_piece = null;
 			if (curr_cell & P.RED):
 				curr_piece = red_pieces[curr_red];
+				if curr_cell & P.KINGED:
+					king_piece = king_red_pieces[curr_red];
+				else:
+					king_red_pieces[curr_red].visible = false;
 				curr_red += 1
+
 			if (curr_cell & P.BLUE):
 				curr_piece = blue_pieces[curr_blue];
+				if curr_cell & P.KINGED:
+					king_piece = king_blue_pieces[curr_blue];
+				else:
+					king_blue_pieces[curr_blue].visible = false;
 				curr_blue += 1
 
-			curr_piece.position.x = board_min.x + x*cell_dim
-			curr_piece.position.z = board_min.z + z*cell_dim
+
+			var posx = board_min.x + x*cell_dim;
+			var posz = board_min.z + z*cell_dim
+
+			curr_piece.position.x = posx;
+			curr_piece.position.z = posz;
+
+			if (king_piece != null):
+				var posy = curr_piece.position.y + 0.5*piece_height + 0.01;
+				king_piece.visible = true;
+				king_piece.position = Vector3(posx, posy, posz);
 
 
 func set_board(new_board: PackedByteArray):
@@ -58,6 +82,9 @@ func set_board(new_board: PackedByteArray):
 func setup_board(new_board = null):
 	blue_pieces = $BluePieces.get_children();
 	red_pieces = $RedPieces.get_children();
+
+	king_blue_pieces = $BlueKings.get_children();
+	king_red_pieces = $RedKings.get_children();
 
 	if new_board != null: board = new_board;
 

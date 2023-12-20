@@ -23,21 +23,52 @@ var change_depth_dead_zone := 0.9;
 var updated_depth := false;
 var stick_value := Vector2();
 
+var collision_area: Area3D = null;
+var board_mesh: MeshInstance3D = null;
+var spot_marker: Node3D = null
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	ai_ctrl_1 = $AIControllerOne
 	depth_display = $DepthDisplayViewport/CanvasLayer/Button
 	ai_ctrl_1.search_depth = depth
+
+	collision_area = $BoardOutline/Area3D;
+	board_mesh = $BoardOutline/GreenBoard;
+	spot_marker = $BoardOutline
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	# if Input.is_action_just_released("advance_game"):
-	# 	print("Advancing Game");
-	# 	# TODO: replace with not randomly chosen board
-	# 	var children = ai_ctrl_1.get_children();
-	# 	var random_index = randi() % children.size();
-	# 	update_root_board_from_child(children[random_index]);
+	# iterates through the grabbables in the scene
+	for grabbable in get_tree().get_nodes_in_group("grabbable"):
+		var grabbable_body = grabbable as RigidBody3D
+		# checks if it overlaps
+		if collision_area.overlaps_body(grabbable_body):
+			var is_grabbed = false;
+			# if its grabbed, don't do anything
+			for grabber in get_node("/root/Globals").active_grabbers:
+				if grabber.grabbed_object == grabbable:
+					is_grabbed = true;
+					break;
+			
+			# if its not grabbed, set its position and rotation, make the outline
+			#   mesh invisible, and start the update thread in the board
+			if not is_grabbed:
+				grabbable.global_position = board_mesh.global_position;
+				grabbable.rotation = board_mesh.rotation;
+
+				spot_marker.visible = false;
+
+				var previous_held = self.chosen_board;
+				self.chosen_board = grabbable.board;
+				if previous_held != chosen_board:
+					update_root_board(self.chosen_board);
+
+				break;
+			elif grabbable_body.board == self.chosen_board:
+				spot_marker.visible = true
+
 	if not trigger_pressed: return;
 
 	if abs(stick_value.x) <= change_depth_dead_zone or updated_depth:
@@ -52,8 +83,8 @@ func _process(_delta):
 	depth_display.text = "< Display " + str(depth) + " >"; 
 
 
-func update_root_board_from_child(child: Node3D):
-	ai_ctrl_1.update_root_board(child.board)
+func update_root_board(board: PackedByteArray):
+	ai_ctrl_1.update_root_board(board)
 
 
 func start_stats_calculation(child: Node3D):

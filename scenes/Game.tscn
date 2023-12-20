@@ -1,10 +1,74 @@
-[gd_scene load_steps=3 format=3 uid="uid://f477brv3bxe1"]
+[gd_scene load_steps=9 format=3 uid="uid://f477brv3bxe1"]
 
 [ext_resource type="Script" path="res://scripts/AIController.gd" id="1_ts2st"]
 [ext_resource type="Script" path="res://scripts/GameController.gd" id="1_yncbg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nlmdv"]
+size = Vector3(0.576823, 0.13, 0.55)
+
+[sub_resource type="Shader" id="Shader_cedx6"]
+code = "shader_type spatial;
+render_mode unshaded;
+
+const bool[64] board = bool[64](
+	true, false, true, false, true, false, true, false,
+	false, true, false, true, false, true, false, true,
+	true, false, true, false, true, false, true, false,
+	false, true, false, true, false, true, false, true,
+	true, false, true, false, true, false, true, false,
+	false, true, false, true, false, true, false, true,
+	true, false, true, false, true, false, true, false,
+	false, true, false, true, false, true, false, true
+);
+
+void fragment() {
+	int xcell = int(floor(UV.x * 8.0));
+	int ycell = int(floor(UV.y * 8.0));
+	
+	float color = float(board[ycell*8+xcell]);
+	ALBEDO = vec3(color, color, color);
+	ALPHA = 0.1;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nlr6x"]
+render_priority = 0
+shader = SubResource("Shader_cedx6")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h2c5f"]
+material = SubResource("ShaderMaterial_nlr6x")
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ag7dj"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.0980392)
+emission_enabled = true
+emission = Color(0, 0.654902, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gvji4"]
+material = SubResource("StandardMaterial3D_ag7dj")
+size = Vector3(0.5, 0.1, 0.5)
 
 [node name="GameController" type="Node3D"]
 script = ExtResource("1_yncbg")
 
 [node name="AIControllerOne" type="Node3D" parent="."]
 script = ExtResource("1_ts2st")
+
+[node name="BoardOutline" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+
+[node name="Area3D" type="Area3D" parent="BoardOutline"]
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BoardOutline/Area3D"]
+shape = SubResource("BoxShape3D_nlmdv")
+
+[node name="TopPlate" type="MeshInstance3D" parent="BoardOutline"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("PlaneMesh_h2c5f")
+skeleton = NodePath("")
+
+[node name="GreenBoard" type="MeshInstance3D" parent="BoardOutline"]
+mesh = SubResource("BoxMesh_gvji4")
+skeleton = NodePath("")
