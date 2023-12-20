@@ -1,29 +1,21 @@
-[gd_scene load_steps=41 format=3 uid="uid://d46wrkgdeynk"]
+[gd_scene load_steps=40 format=3 uid="uid://d46wrkgdeynk"]
 
 [ext_resource type="Script" path="res://scripts/initialize.gd" id="1_xecma"]
 [ext_resource type="Script" path="res://scripts/locomotion.gd" id="2_kvn2k"]
 [ext_resource type="PackedScene" uid="uid://dw2kfbg15qqeu" path="res://controllers/controller_l.fbx" id="3_y2kpf"]
 [ext_resource type="PackedScene" uid="uid://doel0ns5nc6bm" path="res://controllers/controller_r.fbx" id="4_5ti0a"]
-[ext_resource type="Script" path="res://scripts/Grabber.gd" id="4_rrqgy"]
 [ext_resource type="PackedScene" uid="uid://f477brv3bxe1" path="res://scenes/Game.tscn" id="5_hriei"]
 [ext_resource type="Script" path="res://scripts/InspectPillarBoard.gd" id="6_hoqqx"]
 [ext_resource type="Shader" path="res://shaders/BoardInvis.gdshader" id="6_txtgk"]
 [ext_resource type="Script" path="res://scripts/Spindle.gd" id="9_lxu1q"]
 [ext_resource type="Script" path="res://scripts/Marker.gd" id="10_akcsd"]
+[ext_resource type="Script" path="res://scripts/ControllerSwitchController.gd" id="10_rodi0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gxrgq"]
 size = Vector3(0.25, 1.5, 0.25)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qbp58"]
-shading_mode = 0
-
-[sub_resource type="SphereMesh" id="SphereMesh_4yoso"]
-material = SubResource("StandardMaterial3D_qbp58")
-radius = 0.015
-height = 0.03
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_jy4do"]
-radius = 0.015
+[sub_resource type="SphereShape3D" id="SphereShape3D_34i4t"]
+radius = 0.02
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y216x"]
 viewport_path = NodePath("GameController/DepthDisplayViewport")
@@ -36,6 +28,9 @@ albedo_texture = SubResource("ViewportTexture_y216x")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ew3p3"]
 size = Vector2(0.05, 0.05)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_s2rmn"]
+radius = 0.02
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_osj4q"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -149,21 +144,19 @@ pose = &"aim"
 [node name="LeftControllerMesh" parent="XROrigin3D/LeftController" instance=ExtResource("3_y2kpf")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05)
 
-[node name="Grabber" type="Node3D" parent="XROrigin3D/LeftController"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00518084)
-script = ExtResource("4_rrqgy")
+[node name="ChangeArea" type="Node3D" parent="XROrigin3D/LeftController"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController/Grabber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.65188e-05)
-mesh = SubResource("SphereMesh_4yoso")
+[node name="Area3D" type="Area3D" parent="XROrigin3D/LeftController/ChangeArea"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/LeftController/ChangeArea/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00761122, -0.0680735, 0.125117)
+shape = SubResource("SphereShape3D_34i4t")
+
+[node name="DepthDisplay" type="MeshInstance3D" parent="XROrigin3D/LeftController"]
+transform = Transform3D(0.999801, -0.0200111, -0.00146076, 0.00398432, 0.26937, -0.963029, 0.0196647, 0.962831, 0.269395, -0.00958693, 0.0843381, 0.0699999)
+material_override = SubResource("StandardMaterial3D_yj6t8")
+mesh = SubResource("PlaneMesh_ew3p3")
 skeleton = NodePath("")
-
-[node name="Area3D" type="Area3D" parent="XROrigin3D/LeftController/Grabber"]
-collision_mask = 5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/LeftController/Grabber/Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.91685e-05)
-shape = SubResource("SphereShape3D_jy4do")
 
 [node name="RightController" type="XRController3D" parent="XROrigin3D"]
 unique_name_in_owner = true
@@ -174,11 +167,13 @@ pose = &"aim"
 [node name="RightControllerMesh" parent="XROrigin3D/RightController" instance=ExtResource("4_5ti0a")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05)
 
-[node name="DepthDisplay" type="MeshInstance3D" parent="XROrigin3D/RightController"]
-transform = Transform3D(0.999801, -0.0200111, -0.00146076, 0.00398432, 0.26937, -0.963029, 0.0196647, 0.962831, 0.269395, 0.0115152, 0.0807967, 0.0695016)
-material_override = SubResource("StandardMaterial3D_yj6t8")
-mesh = SubResource("PlaneMesh_ew3p3")
-skeleton = NodePath("")
+[node name="ChangeArea" type="Node3D" parent="XROrigin3D/RightController"]
+
+[node name="Area3D" type="Area3D" parent="XROrigin3D/RightController/ChangeArea"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/RightController/ChangeArea/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00704709, -0.0677311, 0.125)
+shape = SubResource("SphereShape3D_s2rmn")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_pi0m0")
@@ -198,6 +193,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_trsr2")
 
 [node name="GameController" parent="." instance=ExtResource("5_hriei")]
+unique_name_in_owner = true
 
 [node name="DepthDisplayViewport" type="SubViewport" parent="GameController"]
 transparent_bg = true
@@ -304,16 +300,16 @@ collision_mask = 5
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Marker/Area3D"]
 shape = SubResource("SphereShape3D_otbxp")
 
+[node name="ControllerSwitchController" type="Node3D" parent="."]
+script = ExtResource("10_rodi0")
+
 [connection signal="button_pressed" from="XROrigin3D/LeftController" to="XROrigin3D" method="button_pressed"]
-[connection signal="button_pressed" from="XROrigin3D/LeftController" to="XROrigin3D/LeftController/Grabber" method="_on_button_pressed"]
 [connection signal="button_pressed" from="XROrigin3D/LeftController" to="GameController" method="button_down"]
 [connection signal="button_released" from="XROrigin3D/LeftController" to="XROrigin3D" method="button_released"]
-[connection signal="button_released" from="XROrigin3D/LeftController" to="XROrigin3D/LeftController/Grabber" method="_on_button_released"]
 [connection signal="button_released" from="XROrigin3D/LeftController" to="GameController" method="button_up"]
 [connection signal="input_vector2_changed" from="XROrigin3D/LeftController" to="XROrigin3D" method="process_input"]
 [connection signal="input_vector2_changed" from="XROrigin3D/LeftController" to="GameController" method="process_input"]
 [connection signal="button_pressed" from="XROrigin3D/RightController" to="XROrigin3D" method="button_pressed"]
-[connection signal="button_pressed" from="XROrigin3D/RightController" to="GameController" method="button_down"]
 [connection signal="button_pressed" from="XROrigin3D/RightController" to="Spindle" method="on_botton_pressed"]
 [connection signal="button_pressed" from="XROrigin3D/RightController" to="Marker" method="on_botton_pressed"]
 [connection signal="button_released" from="XROrigin3D/RightController" to="XROrigin3D" method="button_released"]

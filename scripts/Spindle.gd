@@ -3,6 +3,10 @@ extends Node3D
 @export var stretch_speed := 1.01
 var leftController : XRController3D
 var rightController : XRController3D
+
+var current_controller: XRController3D = null;
+var use_right_controller := true;
+
 var up : Vector3 
 var use_model_front:= false
 var stretch_model:= false
@@ -20,6 +24,13 @@ func _ready():
 func _process(_delta):
 	leftController = $%LeftController as XRController3D
 	rightController = $%RightController as XRController3D
+
+	current_controller = (
+		rightController 
+		if use_right_controller else 
+		leftController
+	)
+
 	up = Vector3(0, 1, 0)
 	
 	if stretch_model:
@@ -29,8 +40,8 @@ func _process(_delta):
 			spindleLength = spindleLength / stretch_speed
 
 	$MeshInstance3D.scale.z = spindleLength
-	self.global_position = rightController.global_position - rightController.basis.z * (spindleLength * 0.5)
-	self.look_at(rightController.global_position, up, use_model_front)
+	self.global_position = current_controller.global_position - current_controller.basis.z * (spindleLength * 0.5)
+	self.look_at(current_controller.global_position, up, use_model_front)
 			
 			
 func on_botton_pressed(button_name: String) -> void:

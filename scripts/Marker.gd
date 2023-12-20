@@ -5,6 +5,10 @@ var grabbed_object: RigidBody3D = null
 var previous_transform: Transform3D
 var leftController : XRController3D
 var rightController : XRController3D
+
+var current_controller: XRController3D = null;
+var use_right_controller := true;
+
 var spindle : Node3D
 var up : Vector3 
 var use_model_front:= false
@@ -15,17 +19,23 @@ var input_vector:= Vector2.ZERO
 var show:= false
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	leftController = $%LeftController as XRController3D
 	rightController = $%RightController as XRController3D
+
+	current_controller = (
+		rightController 
+		if use_right_controller else 
+		leftController
+	)
+
 	spindle = $%Spindle as Node3D
 	up = Vector3(0, 1, 0)
-	self.global_position = rightController.global_position - (rightController.basis.z * spindle.spindleLength);
-	self.look_at(rightController.global_position, up,use_model_front)
+	self.global_position = current_controller.global_position - (current_controller.basis.z * spindle.spindleLength);
+	self.look_at(current_controller.global_position, up,use_model_front)
 	if self.grabbed_object:
 		self.grabbed_object.transform = self.global_transform * self.previous_transform.affine_inverse() * self.grabbed_object.transform
 	self.previous_transform = self.global_transform
@@ -52,7 +62,7 @@ func _process(_delta):
 			highlightmesh.visible = false;
 			
 	if self.grabbed_object:
-		self.grabbed_object.look_at(rightController.global_position, up)
+		self.grabbed_object.look_at(current_controller.global_position, up)
 		if show:
 			self.grabbed_object.rotate_object_local(Vector3(1, 0, 0),deg_to_rad(-90))
 					
