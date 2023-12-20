@@ -29,6 +29,9 @@ var blue_pieces: Array;
 var king_red_pieces: Array;
 var king_blue_pieces: Array;
 
+var parent_scene: RigidBody3D = null;
+var next_scenes: Array = []
+
 var piece_height = 2 * 0.01;
 
 func update_piece_meshes():
@@ -36,6 +39,12 @@ func update_piece_meshes():
 	var idx = 0;
 	var curr_red = 0;
 	var curr_blue = 0;
+
+	for i in range(king_blue_pieces.size()):
+		# assumes red and blue kings are same size (which they are)
+		king_blue_pieces[i].visible = false;
+		king_red_pieces[i].visible = false;
+
 	for z in range(n_rows):
 		for x in range(n_cols):
 			var curr_cell = board[idx];
@@ -49,16 +58,12 @@ func update_piece_meshes():
 				curr_piece = red_pieces[curr_red];
 				if curr_cell & P.KINGED:
 					king_piece = king_red_pieces[curr_red];
-				else:
-					king_red_pieces[curr_red].visible = false;
 				curr_red += 1
 
 			if (curr_cell & P.BLUE):
 				curr_piece = blue_pieces[curr_blue];
 				if curr_cell & P.KINGED:
 					king_piece = king_blue_pieces[curr_blue];
-				else:
-					king_blue_pieces[curr_blue].visible = false;
 				curr_blue += 1
 
 
@@ -73,18 +78,28 @@ func update_piece_meshes():
 				king_piece.visible = true;
 				king_piece.position = Vector3(posx, posy, posz);
 
+	while (curr_red < red_pieces.size()):
+		red_pieces[curr_red].visible = false;
+		curr_red += 1;
+
+	while (curr_blue < blue_pieces.size()):
+		blue_pieces[curr_blue].visible = false;
+		curr_blue += 1;
+
 
 func set_board(new_board: PackedByteArray):
 	board = new_board;
 	update_piece_meshes();
 
 
-func setup_board(new_board = null):
+func setup_board(parent: RigidBody3D, new_board = null):
 	blue_pieces = $BluePieces.get_children();
 	red_pieces = $RedPieces.get_children();
 
 	king_blue_pieces = $BlueKings.get_children();
 	king_red_pieces = $RedKings.get_children();
+
+	self.parent_scene = parent;
 
 	if new_board != null: board = new_board;
 
@@ -93,7 +108,7 @@ func setup_board(new_board = null):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	setup_board()
+	setup_board(null)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

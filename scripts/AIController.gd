@@ -5,6 +5,7 @@ class P:
 	const BLUE: int = 2;
 	const RED: int = 4;
 	const KINGED: int = 8;
+	const NOT_KING: int = ~KINGED;
 
 var root_board: PackedByteArray = [
 	P.EMPTY, P.RED, P.EMPTY, P.RED, P.EMPTY, P.RED, P.EMPTY, P.RED,
@@ -14,8 +15,19 @@ var root_board: PackedByteArray = [
 	P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
 	P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
 	P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE,
-	P.BLUE | P.KINGED, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY,
+	P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY,
 ]
+
+# var root_board: PackedByteArray = [
+# 	P.EMPTY, P.EMPTY, P.EMPTY, P.RED, P.EMPTY, P.RED, P.EMPTY, P.RED,
+# 	P.RED, P.EMPTY, P.RED, P.EMPTY, P.RED, P.EMPTY, P.RED, P.EMPTY,
+# 	P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
+# 	P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
+# 	P.EMPTY, P.EMPTY, P.EMPTY, P.RED, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
+# 	P.EMPTY, P.EMPTY, P.BLUE | P.KINGED, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, P.EMPTY, 
+# 	P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE,
+# 	P.EMPTY, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY, P.BLUE, P.EMPTY,
+# ]
 
 var opposite_type := {
 	P.RED: P.BLUE,
@@ -41,7 +53,7 @@ var found_stats: Dictionary = {};
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	root_board_scene = board_scene.instantiate()
-	root_board_scene.setup_board(root_board);
+	root_board_scene.setup_board(null, root_board);
 	root_board_scene.gravity_scale = 0.0;
 	root_board_scene.linear_velocity = Vector3();
 
@@ -49,7 +61,7 @@ func _ready() -> void:
 
 
 func update_root_board(board: PackedByteArray):
-	root_board_scene.setup_board(board); 
+	root_board_scene.setup_board(null, board); 
 	root_board_scene.position = Vector3();
 	root_board = board;
 	update_next();
@@ -63,15 +75,19 @@ func update_depth(new_depth: int):
 	self.turn_color = opposite_type[self.turn_color]
 
 
-func instantiate_new_board_scene(board: PackedByteArray):
+func instantiate_new_board_scene(
+	parent: RigidBody3D, board: PackedByteArray
+) -> RigidBody3D:
 	var new_board_scene = board_scene.instantiate()
-	new_board_scene.setup_board(board)
+	new_board_scene.setup_board(parent, board)
 	new_board_scene.gravity_scale = 0.0;
 	new_board_scene.linear_velocity = Vector3();
 
 	self.add_child(new_board_scene)
 
 	new_board_scene.position.x = self.get_children().size() * 1.1;
+
+	return new_board_scene;
 
 
 func get_valid_moves(
@@ -81,20 +97,20 @@ func get_valid_moves(
 		return []
 
 	var cell: int = board[idx]
-	var cell_norm: int = cell ^ P.KINGED;
+	var cell_norm: int = cell & P.NOT_KING;
 	# return will be array of [start_idx, final_idx, will_capture, capture_id]
 	var check_moves: Array = []
 
 	# up is negative, down is positive
 	if cell & P.KINGED:
 		if x - 1 >= 0 and y + 1 < self.n_rows:
-			check_moves.append([idx + self.n_cols - 1, 1, -1])
+			check_moves.append([(idx + self.n_cols) - 1, 1, -1])
 		if x + 1 < self.n_cols and y + 1 < self.n_rows:
-			check_moves.append([idx + self.n_cols + 1, 1, 1])
+			check_moves.append([(idx + self.n_cols) + 1, 1, 1])
 		if x - 1 >= 0 and y - 1 >= 0:
-			check_moves.append([idx - self.n_cols - 1, -1, -1])
+			check_moves.append([(idx - self.n_cols) - 1, -1, -1])
 		if x + 1 < self.n_cols and y - 1 >= 0:
-			check_moves.append([idx - self.n_cols + 1, -1, 1])
+			check_moves.append([(idx - self.n_cols) + 1, -1, 1])
 	else:
 		# blue goes up, so should be idx - values
 		# red goes down so should be idx + values
@@ -110,7 +126,7 @@ func get_valid_moves(
 	
 	var return_moves = []
 	for move in check_moves:
-		var new_cell_norm: int = board[move[0]] ^ P.KINGED;
+		var new_cell_norm: int = board[move[0]] & P.NOT_KING;
 		if new_cell_norm & P.EMPTY: 
 			# if empty, its always valid to go to
 			return_moves.append([idx, move[0], false, -1]);
@@ -124,7 +140,7 @@ func get_valid_moves(
 			if (jump_col >= 0 and jump_col < n_cols and 
 				jump_row >= 0 and jump_row < n_rows):
 				return_moves.append([
-					idx, jump_row*n_cols + jump_row, true, move[0]
+					idx, jump_row*n_cols + jump_col, true, move[0]
 				])
 
 	return return_moves;
@@ -167,21 +183,28 @@ func get_all_valid_moves(board: PackedByteArray, turn: int) -> Array:
 	return all_valid_moves;
 
 
-func recurse_generate_scenes(board: PackedByteArray, turn: int, level: int):
+func recurse_generate_scenes(
+	parent: RigidBody3D, board: PackedByteArray, turn: int, level: int
+):
 	# this function assumes that the root board has been updated
 	if level == 0: return;
 
 	var all_valid_moves = get_all_valid_moves(board, turn)
 
+	parent.next_scenes = []
 	for move in all_valid_moves:
 		# move[0] -> from idx, move[1] -> to idx, 
 		# move[2] -> piece captured, move[3] -> idx of piece captured
 		
 		var new_board = do_move_on_board(board, move);
-		instantiate_new_board_scene(new_board[0]);
-
+		var new_child = instantiate_new_board_scene(parent, new_board[0]);
+		
+		# for setting up the cloud later
+		parent.next_scenes.append(new_child);
 		# change turn color before recursing
-		recurse_generate_scenes(new_board[0], opposite_type[turn], level-1);
+		recurse_generate_scenes(
+			new_child, new_board[0], opposite_type[turn], level-1
+		);
 
 
 func count_board_pieces(board: PackedByteArray) -> Dictionary:
@@ -201,30 +224,34 @@ func count_board_pieces(board: PackedByteArray) -> Dictionary:
 	return counts;
 
 
+func recurse_set_board_positions(curr_node: RigidBody3D, depth: int):
+	if depth == 0: return;
+
+	var dist_mod := 1.5;
+	var curr_angle := 0.0;
+	var angle_inc: float = (2*PI) / curr_node.next_scenes.size();
+	for child in curr_node.next_scenes:
+		child.position = Vector3(
+			curr_node.position.x + cos(curr_angle) * dist_mod,
+			((search_depth+1) - depth) * 0.2,
+			curr_node.position.z + sin(curr_angle) * dist_mod
+		)
+		curr_angle += angle_inc;
+		recurse_set_board_positions(child, depth-1);
+
+
 func update_next() -> void:
+	print("update next");
 	# clear children to setup the new children
 	for child in self.get_children():
 		if child != root_board_scene: 
 			child.free();
 	
-	recurse_generate_scenes(root_board, self.turn_color, self.search_depth);
+	recurse_generate_scenes(
+		root_board_scene, root_board, self.turn_color, self.search_depth
+	);
 
-	# TODO: Change this so it generates into a sort of cloud rather than
-	#       just one ring
-	var children: Array = self.get_children();
-	var num_children: int = children.size();
-	var curr_angle: float = 0.0;
-	var num_in_ring = 11;
-	var angle_inc: float = (2*PI) / num_in_ring;
-	var dist_mod = 2;
-	var counter = 0;
-	for child in children:
-		if child == root_board_scene: continue;
-		if counter == num_in_ring: break;
-		child.position.x = self.position.x + cos(curr_angle) * dist_mod; 
-		child.position.z = self.position.z + sin(curr_angle) * dist_mod;
-		curr_angle += angle_inc;
-		counter += 1
+	recurse_set_board_positions(root_board_scene, search_depth);
 
 	self.turn_color = self.opposite_type[self.turn_color]
 

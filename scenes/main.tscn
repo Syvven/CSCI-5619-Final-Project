@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://d46wrkgdeynk"]
+[gd_scene load_steps=41 format=3 uid="uid://d46wrkgdeynk"]
 
 [ext_resource type="Script" path="res://scripts/initialize.gd" id="1_xecma"]
 [ext_resource type="Script" path="res://scripts/locomotion.gd" id="2_kvn2k"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://f477brv3bxe1" path="res://scenes/Game.tscn" id="5_hriei"]
 [ext_resource type="Script" path="res://scripts/InspectPillarBoard.gd" id="6_hoqqx"]
 [ext_resource type="Shader" path="res://shaders/BoardInvis.gdshader" id="6_txtgk"]
+[ext_resource type="Script" path="res://scripts/Spindle.gd" id="9_lxu1q"]
+[ext_resource type="Script" path="res://scripts/Marker.gd" id="10_akcsd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gxrgq"]
 size = Vector3(0.25, 1.5, 0.25)
@@ -22,15 +24,6 @@ height = 0.03
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_jy4do"]
 radius = 0.015
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_qxktu"]
-top_radius = 0.05
-bottom_radius = 0.05
-height = 0.1
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_6qnox"]
-height = 0.11
-radius = 0.06
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y216x"]
 viewport_path = NodePath("GameController/DepthDisplayViewport")
@@ -115,6 +108,19 @@ shader = ExtResource("6_txtgk")
 material = SubResource("ShaderMaterial_5n1j1")
 size = Vector2(0.5, 0.5)
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_27oyv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_44l4h"]
+albedo_color = Color(0, 0.980392, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_55mn1"]
+material = SubResource("StandardMaterial3D_44l4h")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_otbxp"]
+radius = 0.05
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_xecma")
 
@@ -167,32 +173,6 @@ pose = &"aim"
 
 [node name="RightControllerMesh" parent="XROrigin3D/RightController" instance=ExtResource("4_5ti0a")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05)
-
-[node name="Selector" type="RigidBody3D" parent="XROrigin3D/RightController"]
-collision_layer = 4
-collision_mask = 4
-freeze = true
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController/Selector"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00511441)
-mesh = SubResource("SphereMesh_4yoso")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/RightController/Selector"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00522593)
-shape = SubResource("SphereShape3D_jy4do")
-
-[node name="Area3D" type="Area3D" parent="XROrigin3D/RightController"]
-visible = false
-collision_layer = 4
-collision_mask = 4
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController/Area3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.314432)
-mesh = SubResource("CylinderMesh_qxktu")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/RightController/Area3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.314247)
-shape = SubResource("CylinderShape3D_6qnox")
 
 [node name="DepthDisplay" type="MeshInstance3D" parent="XROrigin3D/RightController"]
 transform = Transform3D(0.999801, -0.0200111, -0.00146076, 0.00398432, 0.26937, -0.963029, 0.0196647, 0.962831, 0.269395, 0.0115152, 0.0807967, 0.0695016)
@@ -303,6 +283,27 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.78367, 1.101, 2.96149)
 mesh = SubResource("PlaneMesh_14ut4")
 skeleton = NodePath("")
 
+[node name="Spindle" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("9_lxu1q")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Spindle"]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_27oyv")
+
+[node name="Marker" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("10_akcsd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Marker"]
+mesh = SubResource("SphereMesh_55mn1")
+
+[node name="Area3D" type="Area3D" parent="Marker"]
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Marker/Area3D"]
+shape = SubResource("SphereShape3D_otbxp")
+
 [connection signal="button_pressed" from="XROrigin3D/LeftController" to="XROrigin3D" method="button_pressed"]
 [connection signal="button_pressed" from="XROrigin3D/LeftController" to="XROrigin3D/LeftController/Grabber" method="_on_button_pressed"]
 [connection signal="button_pressed" from="XROrigin3D/LeftController" to="GameController" method="button_down"]
@@ -313,7 +314,12 @@ skeleton = NodePath("")
 [connection signal="input_vector2_changed" from="XROrigin3D/LeftController" to="GameController" method="process_input"]
 [connection signal="button_pressed" from="XROrigin3D/RightController" to="XROrigin3D" method="button_pressed"]
 [connection signal="button_pressed" from="XROrigin3D/RightController" to="GameController" method="button_down"]
+[connection signal="button_pressed" from="XROrigin3D/RightController" to="Spindle" method="on_botton_pressed"]
+[connection signal="button_pressed" from="XROrigin3D/RightController" to="Marker" method="on_botton_pressed"]
 [connection signal="button_released" from="XROrigin3D/RightController" to="XROrigin3D" method="button_released"]
 [connection signal="button_released" from="XROrigin3D/RightController" to="GameController" method="button_up"]
+[connection signal="button_released" from="XROrigin3D/RightController" to="Spindle" method="on_botton_released"]
+[connection signal="button_released" from="XROrigin3D/RightController" to="Marker" method="on_botton_released"]
 [connection signal="input_vector2_changed" from="XROrigin3D/RightController" to="XROrigin3D" method="process_input"]
 [connection signal="input_vector2_changed" from="XROrigin3D/RightController" to="GameController" method="process_input"]
+[connection signal="input_vector2_changed" from="XROrigin3D/RightController" to="Marker" method="process_input"]

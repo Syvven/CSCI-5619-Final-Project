@@ -73,7 +73,7 @@ func _process(delta):
 	if trigger_clicked: return;
 
 	var mov_val = -self.input_vector.y
-	var turn_val = -self.input_vector.x
+	# var turn_val = -self.input_vector.x
 
 	# self.body.global_position.x = self.camera.global_position.x
 	# self.body.global_position.z = self.camera.global_position.z
@@ -86,33 +86,33 @@ func _process(delta):
 						else self.camera.global_rotation.y
 		)
 
-	# get deadzone of the turning type and return if inside the deadzone
-	var turn_dead_zone = self.snap_turn_dead_zone if self.snap_turn else self.smooth_turn_dead_zone
-	if abs(turn_val) <= turn_dead_zone:
-		if abs(turn_val) < 1e-6: 
-			self.snap_turned = false;
-		return;
+	# # get deadzone of the turning type and return if inside the deadzone
+	# var turn_dead_zone = self.snap_turn_dead_zone if self.snap_turn else self.smooth_turn_dead_zone
+	# if abs(turn_val) <= turn_dead_zone:
+	# 	if abs(turn_val) < 1e-6: 
+	# 		self.snap_turned = false;
+	# 	return;
 
-	# Smooth turn
-	if not self.snap_turn:
-		self.turn_timer = 0.0;
-		# move to the position of the camera
-		self.translate(self.camera.position)
+	# # Smooth turn
+	# if not self.snap_turn:
+	# 	self.turn_timer = 0.0;
+	# 	# move to the position of the camera
+	# 	self.translate(self.camera.position)
 
-		# rotate about the camera's position
-		self.rotate(Vector3.UP, deg_to_rad(smooth_turn_speed) * turn_val * delta)
+	# 	# rotate about the camera's position
+	# 	self.rotate(Vector3.UP, deg_to_rad(smooth_turn_speed) * turn_val * delta)
 
-		# reverse the translation to move back to the original position
-		self.translate(self.camera.position * -1)
-		return;
+	# 	# reverse the translation to move back to the original position
+	# 	self.translate(self.camera.position * -1)
+	# 	return;
 
-	if self.snap_turned: return;
+	# if self.snap_turned: return;
 
-	self.snap_turned = true;
+	# self.snap_turned = true;
 
-	self.translate(self.camera.position)
-	self.rotate(Vector3.UP, deg_to_rad(snap_turn_angle) * sign(turn_val))
-	self.translate(self.camera.position * -1);
+	# self.translate(self.camera.position)
+	# self.rotate(Vector3.UP, deg_to_rad(snap_turn_angle) * sign(turn_val))
+	# self.translate(self.camera.position * -1);
 
 func process_input(input_name: String, input_value = null):
 	if input_name == "primary":

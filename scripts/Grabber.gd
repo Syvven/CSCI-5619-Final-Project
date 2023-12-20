@@ -27,6 +27,14 @@ func _on_button_pressed(button_name: String) -> void:
 	# Stop if we have not clicked the grip button or we already are grabbing an object
 	if button_name != "grip_click" || self.grabbed_object != null:
 		return
+
+	# print(button_name);
+	# if button_name == "ax_button" and grabbed_object != null:
+	# 	for y in range(8):
+	# 		var br = ""
+	# 		for x in range(8):
+	# 			br += str(grabbed_object.board[y*8 + x]) + " "  
+	# 		print(br);
 	
 	var grabbables = get_tree().get_nodes_in_group("grabbable")
 	var collision_area = $Area3D as Area3D
