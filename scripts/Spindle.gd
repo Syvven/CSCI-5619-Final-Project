@@ -5,6 +5,7 @@ var leftController : XRController3D
 var rightController : XRController3D
 
 var current_controller: XRController3D = null;
+var other_controller: XRController3D = null
 var use_right_controller := true;
 
 var up : Vector3 
@@ -17,7 +18,7 @@ var input_vector:= Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -30,6 +31,24 @@ func _process(_delta):
 		if use_right_controller else 
 		leftController
 	)
+
+	other_controller = (
+		leftController 
+		if use_right_controller else 
+		rightController
+	)
+
+	if not current_controller.button_pressed.is_connected(self.on_botton_pressed):
+		current_controller.button_pressed.connect(self.on_botton_pressed); 
+
+	if not current_controller.button_released.is_connected(self.on_botton_released):
+		current_controller.button_released.connect(self.on_botton_released); 
+	
+	if other_controller.button_pressed.is_connected(on_botton_pressed):
+		other_controller.button_pressed.disconnect(on_botton_pressed);
+
+	if other_controller.button_released.is_connected(on_botton_released):
+		other_controller.button_released.disconnect(on_botton_released);
 
 	up = Vector3(0, 1, 0)
 	

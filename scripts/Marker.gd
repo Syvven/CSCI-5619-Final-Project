@@ -7,6 +7,7 @@ var leftController : XRController3D
 var rightController : XRController3D
 
 var current_controller: XRController3D = null;
+var other_controller: XRController3D = null;
 var use_right_controller := true;
 
 var spindle : Node3D
@@ -17,6 +18,7 @@ var zoom_marker_zoom:= false
 var zoom_marker_shrink:= false
 var input_vector:= Vector2.ZERO
 var show:= false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -31,6 +33,30 @@ func _process(_delta):
 		if use_right_controller else 
 		leftController
 	)
+
+	other_controller = (
+		leftController 
+		if use_right_controller else 
+		rightController
+	)
+
+	if not current_controller.button_pressed.is_connected(self.on_botton_pressed):
+		current_controller.button_pressed.connect(self.on_botton_pressed); 
+
+	if not current_controller.button_released.is_connected(self.on_botton_released):
+		current_controller.button_released.connect(self.on_botton_released); 
+
+	if not current_controller.input_vector2_changed.is_connected(self.process_input):
+		current_controller.input_vector2_changed.connect(self.process_input); 
+
+	if other_controller.button_pressed.is_connected(on_botton_pressed):
+		other_controller.button_pressed.disconnect(on_botton_pressed);
+
+	if other_controller.button_released.is_connected(on_botton_released):
+		other_controller.button_released.disconnect(on_botton_released);
+
+	if other_controller.input_vector2_changed.is_connected(process_input):
+		other_controller.input_vector2_changed.disconnect(process_input);
 
 	spindle = $%Spindle as Node3D
 	up = Vector3(0, 1, 0)
@@ -79,8 +105,6 @@ func on_botton_pressed(button_name: String) -> void:
 
 	if button_name != "grip_click" || self.grabbed_object != null:
 		return
-
-	print("grip click");
 	
 	var grabbables = get_tree().get_nodes_in_group("grabbable")
 	var collision_area = $Area3D as Area3D

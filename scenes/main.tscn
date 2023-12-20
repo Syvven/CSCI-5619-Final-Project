@@ -175,6 +175,12 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00704709, -0.0677311, 0.125)
 shape = SubResource("SphereShape3D_s2rmn")
 
+[node name="DepthDisplay" type="MeshInstance3D" parent="XROrigin3D/RightController"]
+transform = Transform3D(0.999801, -0.0200111, -0.00146076, 0.00398432, 0.26937, -0.963029, 0.0196647, 0.962831, 0.269395, 0.00483108, 0.0843381, 0.0699999)
+material_override = SubResource("StandardMaterial3D_yj6t8")
+mesh = SubResource("PlaneMesh_ew3p3")
+skeleton = NodePath("")
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_pi0m0")
 
@@ -290,6 +296,7 @@ mesh = SubResource("CylinderMesh_27oyv")
 [node name="Marker" type="Node3D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("10_akcsd")
+zoom_marker_speed = null
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Marker"]
 mesh = SubResource("SphereMesh_55mn1")
@@ -304,18 +311,8 @@ shape = SubResource("SphereShape3D_otbxp")
 script = ExtResource("10_rodi0")
 
 [connection signal="button_pressed" from="XROrigin3D/LeftController" to="XROrigin3D" method="button_pressed"]
-[connection signal="button_pressed" from="XROrigin3D/LeftController" to="GameController" method="button_down"]
 [connection signal="button_released" from="XROrigin3D/LeftController" to="XROrigin3D" method="button_released"]
-[connection signal="button_released" from="XROrigin3D/LeftController" to="GameController" method="button_up"]
 [connection signal="input_vector2_changed" from="XROrigin3D/LeftController" to="XROrigin3D" method="process_input"]
-[connection signal="input_vector2_changed" from="XROrigin3D/LeftController" to="GameController" method="process_input"]
 [connection signal="button_pressed" from="XROrigin3D/RightController" to="XROrigin3D" method="button_pressed"]
-[connection signal="button_pressed" from="XROrigin3D/RightController" to="Spindle" method="on_botton_pressed"]
-[connection signal="button_pressed" from="XROrigin3D/RightController" to="Marker" method="on_botton_pressed"]
 [connection signal="button_released" from="XROrigin3D/RightController" to="XROrigin3D" method="button_released"]
-[connection signal="button_released" from="XROrigin3D/RightController" to="GameController" method="button_up"]
-[connection signal="button_released" from="XROrigin3D/RightController" to="Spindle" method="on_botton_released"]
-[connection signal="button_released" from="XROrigin3D/RightController" to="Marker" method="on_botton_released"]
 [connection signal="input_vector2_changed" from="XROrigin3D/RightController" to="XROrigin3D" method="process_input"]
-[connection signal="input_vector2_changed" from="XROrigin3D/RightController" to="GameController" method="process_input"]
-[connection signal="input_vector2_changed" from="XROrigin3D/RightController" to="Marker" method="process_input"]

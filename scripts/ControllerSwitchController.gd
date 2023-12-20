@@ -76,6 +76,7 @@ func _process(delta):
 
 			marker.use_right_controller = not marker.use_right_controller;
 			spindle.use_right_controller = not spindle.use_right_controller;
+			game_controller.use_left_controller = not game_controller.use_left_controller;
 
 			cooldown_timer.start();
 
