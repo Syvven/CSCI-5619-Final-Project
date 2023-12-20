@@ -25,21 +25,14 @@ Noah Hendrickson, Zitong Xiao
    This board will be the new root board and subsequent boards will be generated
    based on that board state.
 
-## Part 3: Teleportation
-
-- At any point, the user can hold the trigger of the aperture selection controller
-while the same controller's joystick is pushed fully forward in order to teleport
-to the location of the aperture marker. 
-- This teleportation ignores the y component of the marker.
-
-## Part 4: Board Stats
+## Part 3: Board Stats
 
 - Boards can be picked up and moved to a pedastal, initially to the right of the user. 
 - Once a board is placed, the application will think for a bit while it calculates
 board states. <br>Once it is done calculating, the wins, losses, draws, and total board
 states spanning from that board will be displayed.
 
-## Part 5: Depth Control
+## Part 4: Depth Control
 
 - Both physical board generation and stats generation are dependent on a depth value.
 - A 1dof menu was implemented to control these values. 
@@ -59,7 +52,7 @@ switch to the other depth mode.
 - The depth of the physical generation can be either 1 or 2. If it goes beyond this,
 the application slows down heavily.
 
-## Part 6: Controller Switching
+## Part 5: Controller Switching
 
 - Taking an idea from google's tilt brush, the controller with the aperture selector
 can be changed by moving together the bottoms of the controllers sufficiently fast enough.
